@@ -1,0 +1,101 @@
+#!/bin/sh
+
+# set -e : Exit the script if any statement returns a non-true return value.
+set -e
+
+# Redirect STDERR to STDOUT
+exec 2>&1
+
+# Make environnement variables accessibles
+[ -r /etc/envvars ] && . /etc/envvars
+
+# Database connection nedded
+if [ -z "$DB_HOST" -o -z "$DB_PORT" ]; then
+    echo "Error, you must define a database connection"
+    exit 1
+fi
+
+# Wait for database connection
+if [ -n "$DB_HOST" -a -n "$DB_PORT" ]; then
+    wait-host "$DB_HOST:$DB_PORT" \
+        -t 0 \
+        -d 2 \
+        -m "Waiting for database connection on host: $DB_HOST and port: $DB_PORT" \
+        -s \
+        -- echo "Database connection established on host: $DB_HOST and port: $DB_PORT" \
+        || echo "Error while trying to connect to the database"
+fi
+
+# Only on first boot
+if [ ! -e "${p_path}/.env" -a ! -e "${p_data}/pterodactyl.conf" ]; then
+
+    echo ""
+    echo "Running first time setup..."
+
+    echo ""
+    echo "Generate .env file from template..."
+    [ -f /etc/service.d/pterodactyl/.env/setup ] && (chmod +x /etc/service.d/pterodactyl/.env/setup; /etc/service.d/pterodactyl/.env/setup)
+    mvlink ${p_path}/.env ${p_data}/pterodactyl.conf
+    chown ${p_user}:${p_group} ${p_data}/pterodactyl.conf
+
+    echo ""
+    echo "Generating application encryption key..."
+    artisan key:generate --force -n
+
+    echo ""
+    echo "Cleaning..."
+    artisan config:cache -q
+    artisan optimize -q
+
+    echo ""
+    echo "Creating database..."
+    artisan migrate --force
+
+    echo ""
+    echo "Seeding database..."
+    artisan db:seed --force
+
+    # Passwords for the p_user must include mixed case, at least one number, and at least 8 characters.
+    if [ -n "$ADMIN_USERNAME" -a -n "$ADMIN_FIRST_NAME" -a -n "$ADMIN_LAST_NAME" -a -n "$ADMIN_MAIL" -a -n "$ADMIN_PASSWORD" ]; then
+        echo ""
+        echo "Creating administrator account..."
+        artisan p:user:make --username=$ADMIN_USERNAME --name-first=$ADMIN_FIRST_NAME --name-last=$ADMIN_LAST_NAME --email=$ADMIN_MAIL --password=$ADMIN_PASSWORD --admin=1 --no-interaction
+    fi
+fi
+
+# Recreate link to .env
+mvlink ${p_path}/.env ${p_data}/pterodactyl.conf
+chown ${p_user}:${p_group} ${p_data}/pterodactyl.conf
+
+# Clear config cache and optimize on every startup
+echo ""
+echo "Cleaning..."
+artisan cache:clear -q
+artisan config:clear -q
+artisan view:clear -q
+artisan route:clear -q
+artisan config:cache -q
+artisan optimize -q
+
+# Always update the database in case of update
+echo ""
+echo "Updating database..."
+artisan migrate --force
+
+# Always update the database in case of update
+echo ""
+echo "Seeding database..."
+artisan db:seed --force
+
+# Start php-fpm
+echo ""
+echo "Enable pterodactyl worker..."
+runit service pterodactyl-worker enable
+
+# Start php-fpm
+echo ""
+echo "Let'g go pterodactyl..."
+exec su-exec ${p_user} php-fpm
+
+# This exit code will be sent as the first parameter to the finish script
+exit 1

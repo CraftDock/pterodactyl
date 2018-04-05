@@ -1,0 +1,27 @@
+#!/bin/sh
+
+# set -e : Exit the script if any statement returns a non-true return value.
+# set -u : Exit the script when using uninitialised variable.
+set -eu
+
+# Redirect STDERR to STDOUT
+exec 2>&1
+
+# Make environnement variables accessibles
+[ -r /etc/envvars ] && . /etc/envvars
+
+# Wait for the core.json file in config folder
+while ! test -f "/srv/daemon/config/core.json"; do
+  sleep 10
+  echo "Waiting for core.json to exist in config folder"
+done
+
+# Move to the working directory before starting the daemon
+cd /srv/daemon
+
+# Let's go and start Pterodactyl Daemon
+exec node /srv/daemon/src/index.js
+
+# This exit code will be sent as the first parameter to the finish script
+exit 1
+

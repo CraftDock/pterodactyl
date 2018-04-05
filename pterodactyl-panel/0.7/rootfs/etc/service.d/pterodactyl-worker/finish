@@ -1,0 +1,7 @@
+#!/bin/sh
+
+echo >&2 "Ending Service pterodactyl-worker with parameters ${@}"
+
+sleep 3
+
+# This service will automaticaly restart after 3 secondes

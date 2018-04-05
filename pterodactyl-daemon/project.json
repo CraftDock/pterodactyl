@@ -1,0 +1,18 @@
+{
+  "name": "craftdock/pterodactyl-daemon",
+  "default": "latest",
+  "versions": [
+    {
+      "version": "latest",
+      "dockerfile": "0.5/Dockerfile",
+      "context": "0.5/.",
+      "data": "0.5.5"
+    },
+    {
+      "version": "0.5",
+      "dockerfile": "0.5/Dockerfile",
+      "context": "0.5/.",
+      "data": "0.5.5"
+    }
+  ]
+}
