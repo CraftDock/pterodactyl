@@ -13,5 +13,5 @@ Refer to the main repository link for all information regarding running the pter
 `/var/run/docker.sock` - Requires the docker daemon socket to operate  
 **All mounts are recommended to be mirrored exactly**.
 
-## Optionnals Mounts
+## Optional Mount
 `/daemon` - Contains config, data, logs and packs folders  
