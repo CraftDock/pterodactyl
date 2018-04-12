@@ -9,7 +9,6 @@ ENV DAEMON_VERSION 0.5.5
 # Define working directory
 WORKDIR /srv/daemon
 
-
 # Install Pterodactyl Daemon : https://daemon.pterodactyl.io/docs/install-daemon
 RUN \
     # Print executed commands
@@ -36,6 +35,8 @@ RUN \
     && rm "${DAEMON_VERSION}.tar.gz" \
     # Install Pterodactyl Daemon
     && npm install --only=production \
+    # default timezone
+    && set-timezone UTC \
     # Clear apk's cache
     && apk-remove .build-dependencies \
     && apk-cleanup \
@@ -48,7 +49,7 @@ RUN \
 
 
 # Add volume to allow persistence
-VOLUME ["/daemon"]
+VOLUME ["/daemon", "/srv/daemon-data"]
 
 # Copy scripts
 COPY /rootfs /
