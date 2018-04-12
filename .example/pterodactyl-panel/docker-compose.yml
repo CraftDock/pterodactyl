@@ -1,0 +1,68 @@
+version: '3'
+
+networks:
+  database:
+    external:
+      name: database
+  proxy:
+    external:
+      name: proxy
+  local:
+    driver: bridge
+
+volumes:
+  pterodactyl_www:
+
+services:
+  pterodactyl-panel:
+    image: craftdock/pterodactyl-panel
+    container_name: pterodactyl-panel
+    hostname: pterodactyl-panel
+    restart: unless-stopped
+    environment:
+      - TIMEZONE=UTC
+      - OPCACHE_ENABLE=1
+      - OPCACHE_ENABLE_CLI=1
+      - OPCACHE_INTERNED_STRINGS_BUFFER=8
+      - OPCACHE_MAX_ACCELERATED_FILES=10000
+      - OPCACHE_ENABLE_MEMORY_CONSUMPTION=128
+      - OPCACHE_SAVE_COMMENTS=1
+      - OPCACHE_REVALIDATE_FREQ=1
+      - DB_HOST=mariadb
+      - DB_PORT=3306
+      - DB_DATABASE=pterodactyl
+      - DB_USERNAME=pterodactyl
+      - DB_PASSWORD=MyDbPassword
+      - REDIS_HOST=redis
+      - REDIS_PORT=6379
+      - APP_URL=http://pterodactyl.example.com
+      - APP_TIMEZONE=UTC
+      - ADMIN_USERNAME=Admin
+      - ADMIN_FIRST_NAME=admin
+      - ADMIN_LAST_NAME=ADMIN
+      - ADMIN_MAIL=me@pterodactyl.io
+      - ADMIN_PASSWORD=MyAdminP@ssw0rd
+      - DOCKER_HOST_IP=xxx.xxx.xxx.xxx
+      - DAEMON_URL=daemon.example.com
+    volumes:
+      - pterodactyl_www:/var/www
+      - /srv/panel-data:/pterodactyl
+    networks:
+      - database
+      - local
+
+  pterodactyl-nginx:
+    build: ./nginx
+    container_name: pterodactyl-nginx
+    hostname: pterodactyl-nginx
+    restart: unless-stopped
+    environment:
+      - VIRTUAL_HOST=pterodactyl.example.com
+      - VIRTUAL_PORT=80
+    volumes:
+      - pterodactyl_www:/var/www:ro
+    depends_on:
+      - pterodactyl-panel
+    networks:
+      - proxy
+      - local

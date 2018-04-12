@@ -1,0 +1,27 @@
+version: '3'
+
+networks:
+  pterodactyl_nw:
+    external:
+      name: pterodactyl_nw
+
+services:
+  pterodactyl-daemon:
+    image: craftdock/pterodactyl-daemon
+    container_name: pterodactyl-daemon
+    hostname: pterodactyl-daemon
+    restart: unless-stopped
+    environment:
+      - BOOT_DELAY=10
+      - DOCKER_HOST_IP=xxx.xxx.xxx.xxx
+      - PANEL_URL=pterodactyl.example.com
+    ports:
+      - 8080:8080
+      - 2022:2022
+    volumes:
+      - /srv/daemon-data:/srv/daemon-data
+      - /srv/daemon:/daemon
+      - /tmp/pterodactyl:/tmp/pterodactyl
+      - /var/run/docker.sock:/var/run/docker.sock
+    networks:
+      - pterodactyl_nw

@@ -1,0 +1,20 @@
+version: '3'
+
+networks:
+  proxy:
+    external:
+      name: proxy
+
+services:
+  proxy:
+    image: jwilder/nginx-proxy:alpine
+    container_name: proxy
+    hostname: proxy
+    restart: always
+    ports:
+      - 80:80
+    volumes:
+      - /srv/proxy/conf.d:/etc/nginx/conf.d
+      - /var/run/docker.sock:/tmp/docker.sock:ro
+    networks:
+      - proxy

@@ -1,0 +1,26 @@
+version: '3'
+
+networks:
+  database:
+    external:
+      name: database
+  proxy:
+    external:
+      name: proxy
+
+services:
+  phpmyadmin:
+    image: phpmyadmin/phpmyadmin
+    container_name: phpmyadmin
+    hostname: phpmyadmin
+    restart: unless-stopped
+    environment:
+      - PMA_HOST=mariadb
+      - PMA_PORT=3306
+      - VIRTUAL_HOST=phpadmin.example.com
+      - VIRTUAL_PORT=80
+    volumes:
+     - /sessions
+    networks:
+      - database
+      - proxy

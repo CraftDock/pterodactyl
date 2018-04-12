@@ -1,0 +1,35 @@
+version: '3'
+
+networks:
+  database:
+    external:
+      name: database
+
+services:
+
+  # MariaDB
+  mariadb:
+    image: craftdock/mariadb
+    container_name: mariadb
+    hostname: mariadb
+    restart: unless-stopped
+    environment:
+      - TIMEZONE=UTC
+      - MYSQL_ROOT_PASSWORD=MyRootPassword          # Change data base root password
+      - MYSQL_DATABASE=pterodactyl
+      - MYSQL_USER=pterodactyl
+      - MYSQL_PASSWORD=MyDbPassword
+    volumes:
+      - /srv/mariadb/db:/var/lib/mysql
+      - /srv/mariadb/backup:/backup/mysql
+    networks:
+      - database
+
+  # Redis
+  redis:
+    image: redis:alpine
+    container_name: redis
+    hostname: redis
+    restart: unless-stopped
+    networks:
+      - database
