@@ -45,7 +45,6 @@ if [ ! -e "${p_path}/.env" -a ! -e "${p_data}/pterodactyl.conf" ]; then
     echo ""
     echo "Cleaning..."
     artisan config:cache -q
-    artisan optimize -q
 
     echo ""
     echo "Creating database..."
@@ -75,7 +74,6 @@ artisan config:clear -q
 artisan view:clear -q
 artisan route:clear -q
 artisan config:cache -q
-artisan optimize -q
 
 # Always update the database in case of update
 echo ""
