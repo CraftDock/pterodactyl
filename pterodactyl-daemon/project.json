@@ -4,9 +4,15 @@
   "versions": [
     {
       "version": "latest",
-      "dockerfile": "0.5/Dockerfile",
-      "context": "0.5/.",
-      "data": "0.5.6"
+      "dockerfile": "0.6/Dockerfile",
+      "context": "0.6/.",
+      "data": "0.6.4"
+    },
+    {
+      "version": "0.6",
+      "dockerfile": "0.6/Dockerfile",
+      "context": "0.6/.",
+      "data": "0.6.4"
     },
     {
       "version": "0.5",
