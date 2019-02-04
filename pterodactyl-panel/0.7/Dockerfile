@@ -4,7 +4,7 @@ LABEL maintainer="Hexosse <hexosse@gmail.com>" \
       description="Pterodactyl panel image based on alpine with runit process supervisor."
 
 # Pterodactyl version
-ENV PTERODACTYL_PANEL_VERSION 0.7.10
+ENV PTERODACTYL_PANEL_VERSION 0.7.12
 
 RUN \
 	# Print executed commands
