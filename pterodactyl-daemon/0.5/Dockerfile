@@ -4,7 +4,7 @@ LABEL maintainer="Hexosse <hexosse@gmail.com>" \
       description="The server control and management daemon built specifically for Pterodactyl Panel"
 
 # Pterodactyl Daemon version :https://github.com/Pterodactyl/Daemon/releases
-ENV DAEMON_VERSION 0.5.6
+ENV DAEMON_VERSION 0.5.7
 
 # Define working directory
 WORKDIR /srv/daemon

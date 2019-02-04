@@ -18,7 +18,7 @@
       "version": "0.5",
       "dockerfile": "0.5/Dockerfile",
       "context": "0.5/.",
-      "data": "0.5.6"
+      "data": "0.5.7"
     }
   ]
 }
