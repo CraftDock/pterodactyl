@@ -33,6 +33,8 @@ RUN \
     && curl -Lo "${DAEMON_VERSION}.tar.gz" "https://github.com/Pterodactyl/Daemon/releases/download/v${DAEMON_VERSION}/daemon.tar.gz" \
     && tar --strip-components=1 -xzvf ${DAEMON_VERSION}.tar.gz \
     && rm "${DAEMON_VERSION}.tar.gz" \
+    # fix an issue with node 10 : https://github.com/pterodactyl/panel/issues/1289
+    && rm -f "package-lock.json" \
     # Install Pterodactyl Daemon
     && npm install --only=production \
     # default timezone
