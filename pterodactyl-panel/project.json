@@ -6,13 +6,13 @@
       "version": "latest",
       "dockerfile": "0.7/Dockerfile",
       "context": "0.7/.",
-      "data": "0.7.12"
+      "data": "0.7.13"
     },
     {
       "version": "0.7",
       "dockerfile": "0.7/Dockerfile",
       "context": "0.7/.",
-      "data": "0.7.12"
+      "data": "0.7.13"
     }
   ]
 }
