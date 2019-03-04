@@ -39,6 +39,7 @@ RUN \
 
 # Copy scripts
 COPY /rootfs /
+RUN chmod +x /usr/local/bin/artisan
 
 # Add volume to allow persistence
 VOLUME [ "/pterodactyl", "/var/www" ]
