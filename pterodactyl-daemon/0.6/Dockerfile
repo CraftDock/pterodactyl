@@ -4,7 +4,7 @@ LABEL maintainer="Hexosse <hexosse@gmail.com>" \
       description="The server control and management daemon built specifically for Pterodactyl Panel"
 
 # Pterodactyl Daemon version :https://github.com/Pterodactyl/Daemon/releases
-ENV DAEMON_VERSION 0.6.11
+ENV DAEMON_VERSION 0.6.12
 
 # Define working directory
 WORKDIR /srv/daemon
@@ -47,8 +47,10 @@ RUN \
     && find /srv/daemon -name ".githold" -type f -delete \
     && find /srv/daemon -name ".gitignore" -type f -delete \
     # Remove default nodejs service
-    && rm -rf /etc/service.d/nodejs
-
+    && rm -rf /etc/service.d/nodejs \
+    # Add sftp-server
+    && curl -sSL https://github.com/pterodactyl/sftp-server/releases/download/$(curl --silent "https://api.github.com/repos/pterodactyl/sftp-server/releases/latest" | grep '"tag_name":' | sed -E 's/.*"([^"]+)".*/\1/')/sftp-server > /srv/daemon/sftp-server \
+    && chmod +x /srv/daemon/sftp-server
 
 # Add volume to allow persistence
 VOLUME ["/daemon", "/srv/daemon-data"]
