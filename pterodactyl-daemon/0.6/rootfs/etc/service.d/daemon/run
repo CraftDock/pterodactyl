@@ -20,7 +20,7 @@ done
 cd /srv/daemon
 
 # Let's go and start Pterodactyl Daemon
-exec node /srv/daemon/src/index.js
+exec su-exec node node /srv/daemon/src/index.js
 
 # This exit code will be sent as the first parameter to the finish script
 exit 1
